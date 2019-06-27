@@ -13,15 +13,15 @@ class CheckoutPostCollection extends Collection
 {
     public $merchantId;
     public $attributes;
-    public $notifyUrl;
     public $returnUrl;
+    public $notifyUrl;
 
     public function __construct()
     {
         parent::__construct();
         $this->merchantId = config('ecpay.MerchantId');
-        $this->notifyUrl = route('ecpay.notify');
-        $this->returnUrl = route('ecpay.return');
+        // $this->returnUrl = route('ecpay.return');
+        // $this->notifyUrl = route('ecpay.notify');
     }
 
     public function setData($formData)
@@ -39,11 +39,16 @@ class CheckoutPostCollection extends Collection
         if (empty($this->attributes)) {
             throw new ECPayException('attributes must be set');
         }
+
         $this->put('MerchantID', $this->merchantId);
         $this->put('MerchantTradeDate', Carbon::now()->format('Y/m/d H:i:s'));
         $this->put('PaymentType', 'aio');
-        $this->put('ReturnURL', $this->notifyUrl);
-        $this->put('OrderResultURL', $this->returnUrl);
+        if(isset($this->attributes['ReturnURL']))
+        	$this->put('ReturnURL', $this->attributes['ReturnURL']);
+        if(isset($this->attributes['ClientBackURL']))
+        	$this->put('ClientBackURL', $this->attributes['ClientBackURL']);
+        if(isset($this->attributes['OrderResultURL']))
+        	$this->put('OrderResultURL', $this->OrderResultURL);
         $this->put('ChoosePayment', $this->attributes['PaymentMethod']);
         $this->put('EncryptType' ,1); // 一律使用 SHA256 加密
         return $this;

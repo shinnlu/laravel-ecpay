@@ -108,15 +108,21 @@ class Checkout
         return $this;
     }
 
-    public function setNotifyUrl($url)
+    public function setReturnUrl($url)
     {
-        $this->postData->notifyUrl = $url;
+        $this->postData->ReturnURL = $url;
         return $this;
     }
 
-    public function setReturnUrl($url)
+    public function setClientBackURL($url)
     {
-        $this->postData->returnUrl = $url;
+        $this->postData->ClientBackURL = $url;
         return $this;
+    }
+
+    public function setOrderResultURL($url)
+    {
+    	$this->postData->OrderResultURL = $url;
+    	return $this;
     }
 }
