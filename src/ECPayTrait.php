@@ -38,7 +38,7 @@ trait ECPayTrait
     public function query()
     {
         $this->setCheckCodeValue();
-        $ch = curl_init();
+        /*$ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->apiUrl);
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -49,11 +49,16 @@ trait ECPayTrait
         // 回傳參數
         $response = curl_exec($ch);
         $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        if ($httpStatus == 200) {
-            return $this->parseResponse($response);
+        curl_close($ch);*/
+
+        $client = new \GuzzleHttp\Client();
+        $response = $client->post($this->apiUrl, ['form_params' => $this->postData->toArray()]);
+		$stream = $response->getBody();
+
+        if ($response->getStatusCode() == 200) {
+            return $this->parseResponse($stream->getContents());
         } else {
-            throw new ECPayException('HTTP Error with code '.$httpStatus);
+            throw new ECPayException('HTTP Error with code '.$response->getStatusCode());
         }
     }
     /**
